@@ -1,13 +1,6 @@
-package esbhttpproxy
+package grailsservicebus
 
-import grails.converters.JSON
-import grails.converters.XML
 import org.apache.commons.logging.LogFactory
-import org.codehaus.groovy.grails.web.json.JSONException
-import org.codehaus.groovy.grails.web.json.JSONObject
-import groovy.util.slurpersupport.GPathResult
-
-import static grails.async.Promises.*
 
 class EsbController {
     private static final log = LogFactory.getLog(EsbController.class)
@@ -51,12 +44,12 @@ class EsbController {
                 }
            } else {
                 // not json
-                log.error "Content type is not JSON"
+                log.error "Content type is not JSON.  Setting status to 406."
                 response.sendError(406, "invalid content type")
             }
         } else {
             // not post
-            log.error "Request method is not POST"
+            log.error "Request method is not POST.  Setting status to 405."
             response.sendError(405)
         }
         log.trace("Leaving index()")

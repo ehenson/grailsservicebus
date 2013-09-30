@@ -1,4 +1,4 @@
-package esbhttpproxy
+package grailsservicebus
 
 import grails.test.mixin.TestFor
 import spock.lang.*

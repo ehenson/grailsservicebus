@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/esbhttpproxy.iml" filepath="$PROJECT_DIR$/esbhttpproxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Grails Service Bus.iml" filepath="$PROJECT_DIR$/Grails Service Bus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Grails Service Bus-grailsPlugins.iml" filepath="$PROJECT_DIR$/Grails Service Bus-grailsPlugins.iml" />
     </modules>
   </component>
 </project>
