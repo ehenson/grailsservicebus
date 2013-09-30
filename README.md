@@ -1,4 +1,4 @@
-grailsservicebus
-================
+Grails Service Bus
+==================
 
-A web service oriented service bus patterned after ESB using Grails
+A web service based service bus patterned after ESB using Grails
