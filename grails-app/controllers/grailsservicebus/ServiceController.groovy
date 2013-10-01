@@ -2,8 +2,8 @@ package grailsservicebus
 
 import org.apache.commons.logging.LogFactory
 
-class EsbController {
-    private static final log = LogFactory.getLog(EsbController.class)
+class ServiceController {
+    private static final log = LogFactory.getLog(ServiceController.class)
 
     def index() {
         def message
@@ -33,6 +33,20 @@ class EsbController {
                 if (message != null) {
                     if (log.isTraceEnabled()) {
                         log.trace "Message = \"${message}\""
+                        log.trace "Checking for valid service object"
+                    }
+
+                    // check for valid service object and throwException if not
+                    if (checkForValidServiceObject(message)) {
+                        // message is good at this point
+                        log.trace "Message has a proper service object"
+                    } else {
+                        if (log.isTraceEnabled()) {
+                            log.trace "Message does not have a proper service object"
+                            log.trace "throwing a message exception and setting status to 400"
+                        }
+                        ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
+                        response.setStatus(406)
                     }
 
                     render (contentType:'application/json') {

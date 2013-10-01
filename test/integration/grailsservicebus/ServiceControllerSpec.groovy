@@ -6,8 +6,8 @@ import spock.lang.*
 /**
  *
  */
-@TestFor(EsbController)
-class EsbControllerSpec extends Specification {
+@TestFor(ServiceController)
+class ServiceControllerSpec extends Specification {
 
     void "test request method as GET"() {
         given: "request method is set to GET"
