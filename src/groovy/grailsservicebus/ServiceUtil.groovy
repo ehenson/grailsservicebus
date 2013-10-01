@@ -22,17 +22,19 @@ public class ServiceUtil {
      * @param actionType
      * @param actionName
      */
-    public static void throwException(def message, def exceptionType, def exceptionMessage, def actionType="groovy", def actionName="unknown") {
+    public static void throwException(
+            def message,
+            def exceptionType, def exceptionMessage, def actionType = "groovy", def actionName = "unknown") {
         def exceptions = []
 
         if (hasException(message)) {
             exceptions = message.exception
         }
 
-        def exception = [actionType:actionType,
-                            actionName:actionName,
-                            exceptionType:exceptionType,
-                            exceptionMessage:exceptionMessage]
+        def exception = [actionType: actionType,
+                actionName: actionName,
+                exceptionType: exceptionType,
+                exceptionMessage: exceptionMessage]
 
         exceptions << exception
 

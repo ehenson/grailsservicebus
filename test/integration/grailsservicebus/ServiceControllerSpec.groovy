@@ -1,7 +1,7 @@
 package grailsservicebus
 
 import grails.test.mixin.TestFor
-import spock.lang.*
+import spock.lang.Specification
 
 /**
  *
@@ -61,7 +61,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message has service key with valid message"() {
         given: "a properly build message"
-        def message = [service:[name:'unittest']]
+        def message = [service: [name: 'unittest']]
 
         expect:
         controller.checkForValidServiceObject(message) is true
@@ -69,7 +69,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message without a service key"() {
         given:
-        def message = [key:'value']
+        def message = [key: 'value']
 
         expect:
         controller.checkForValidServiceObject(message) is false
@@ -77,7 +77,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message has service key with a value that is not a map"() {
         given:
-        def message = [service:'unittest']
+        def message = [service: 'unittest']
 
         expect:
         controller.checkForValidServiceObject(message) is false
@@ -85,7 +85,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message has service key without the name key"() {
         given:
-        def message = [service:[key:'value']]
+        def message = [service: [key: 'value']]
 
         expect:
         controller.checkForValidServiceObject(message) is false
@@ -93,7 +93,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message has service key with a value name that is not a string"() {
         given:
-        def message = [service:[name:1]]
+        def message = [service: [name: 1]]
 
         expect:
         controller.checkForValidServiceObject(message) is false
@@ -101,7 +101,7 @@ class ServiceControllerSpec extends Specification {
 
     void "message has a service key with the value name empty"() {
         given:
-        def message = [service:[name:""]]
+        def message = [service: [name: ""]]
 
         expect:
         controller.checkForValidServiceObject(message) is false

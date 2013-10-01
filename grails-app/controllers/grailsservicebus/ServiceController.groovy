@@ -49,14 +49,14 @@ class ServiceController {
                         response.setStatus(406)
                     }
 
-                    render (contentType:'application/json') {
+                    render(contentType: 'application/json') {
                         if (log.isTraceEnabled()) {
                             log.trace "Returning message = \"${message.toString()}\""
                         }
                         message
                     }
                 }
-           } else {
+            } else {
                 // not json
                 log.error "Content type is not JSON.  Setting status to 406."
                 response.sendError(406, "invalid content type")
