@@ -28,11 +28,11 @@ class ServiceController {
                 } catch (org.codehaus.groovy.grails.web.converters.exceptions.ConverterException e) {
                     log.error("JSON parsing error in Message", e)
                     ServiceUtil.throwException(message, "ServiceProtocolException", "Message JSON syntax error")
-                    httpStatus = "400"
+                    httpStatus = 400
                 }
 
                 // at this point JSON is validated by Grails
-                if (httpStatus == "200") {
+                if (httpStatus == 200) {
                     if (log.isTraceEnabled()) {
                         log.trace "Message = \"${message}\""
                         log.trace "Checking for valid service object"
@@ -48,20 +48,20 @@ class ServiceController {
                             log.trace "throwing a message exception and setting status to 400"
                         }
                         ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
-                        httpStatus = "406"
+                        httpStatus = 406
                     }
                 }
             } else {
                 // not json
                 log.error "Content type is not JSON.  Setting status to 406."
                 ServiceUtil.throwException(message, "ServiceProtocolException", "Only JSON Content Types are supported.")
-                httpStatus = "406"
+                httpStatus = 406
             }
         } else {
             // not post
             log.error "Request method is not POST.  Setting status to 405."
             ServiceUtil.throwException(message, "ServiceProtocolException", "Non POST request are not supported.")
-            httpStatus = "405"
+            httpStatus = 405
         }
 
         render(contentType: 'application/json', status: httpStatus) {

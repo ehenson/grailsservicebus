@@ -79,13 +79,13 @@ class ServiceControllerSpec extends Specification {
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
         controller.request.content = "".bytes
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}}')
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
 
         when: "index action is called"
         controller.index()
 
-        then: "response status should be 400"
-        controller.response.status == 400
+        then:
+        controller.response.status == 406
         controller.response.json == json
         controller.response.contentType == "application/json;charset=UTF-8"
     }
