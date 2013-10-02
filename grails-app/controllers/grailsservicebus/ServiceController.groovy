@@ -6,7 +6,8 @@ class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
 
     def index() {
-        def message
+        def message = [:]
+        def httpStatus = 200
 
         if (log.isTraceEnabled()) {
             log.trace "Entered index()"
@@ -22,15 +23,16 @@ class ServiceController {
                 log.trace "Request has format of JSON"
 
                 try {
-                    log.trace("Getting JSON object of Message in the request")
+                    log.trace "Getting JSON object of Message in the request"
                     message = request.JSON
                 } catch (org.codehaus.groovy.grails.web.converters.exceptions.ConverterException e) {
                     log.error("JSON parsing error in Message", e)
-                    response.sendError(400, "Message JSON syntax error")
+                    ServiceUtil.throwException(message, "ServiceProtocolException", "Message JSON syntax error")
+                    httpStatus = "400"
                 }
 
                 // at this point JSON is validated by Grails
-                if (message != null) {
+                if (httpStatus == "200") {
                     if (log.isTraceEnabled()) {
                         log.trace "Message = \"${message}\""
                         log.trace "Checking for valid service object"
@@ -46,25 +48,27 @@ class ServiceController {
                             log.trace "throwing a message exception and setting status to 400"
                         }
                         ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
-                        response.setStatus(406)
-                    }
-
-                    render(contentType: 'application/json') {
-                        if (log.isTraceEnabled()) {
-                            log.trace "Returning message = \"${message.toString()}\""
-                        }
-                        message
+                        httpStatus = "406"
                     }
                 }
             } else {
                 // not json
                 log.error "Content type is not JSON.  Setting status to 406."
-                response.sendError(406, "invalid content type")
+                ServiceUtil.throwException(message, "ServiceProtocolException", "Only JSON Content Types are supported.")
+                httpStatus = "406"
             }
         } else {
             // not post
             log.error "Request method is not POST.  Setting status to 405."
-            response.sendError(405)
+            ServiceUtil.throwException(message, "ServiceProtocolException", "Non POST request are not supported.")
+            httpStatus = "405"
+        }
+
+        render(contentType: 'application/json', status: httpStatus) {
+            if (log.isTraceEnabled()) {
+                log.trace "Returning message = \"${message.toString()}\""
+            }
+            message
         }
         log.trace("Leaving index()")
     }

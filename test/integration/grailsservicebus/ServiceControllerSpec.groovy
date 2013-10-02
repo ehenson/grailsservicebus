@@ -1,62 +1,93 @@
 package grailsservicebus
 
-import grails.test.mixin.TestFor
+import grails.converters.JSON
 import spock.lang.Specification
 
 /**
  *
  */
-@TestFor(ServiceController)
 class ServiceControllerSpec extends Specification {
-
+    ServiceController controller
+    
+    def setup() {
+        controller = new ServiceController()
+    }
+    
     void "test request method as GET"() {
         given: "request method is set to GET"
-        request.method = "GET"
+        controller.request.method = "GET"
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}}')
 
         when: "index action is called"
         controller.index()
 
         then: "response status should be 405"
-        response.status == 405
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
+        controller.response.status == 405
     }
 
     void "test for status 406 when contentType is not JSON"() {
         given: "request method is POST and contentType is xml"
-        request.method = "POST"
-        request.contentType = "text/xml"
+        controller.request.method = "POST"
+        controller.request.contentType = "text/xml"
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}}')
 
         when: "index action is called"
         controller.index()
 
         then: "response status should be 406"
-        response.status == 406
+        controller.response.status == 406
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
     }
 
     void "test for contentType JSON and status 200 in response"() {
         given: "a properly formed message, method, and contentType"
-        request.method = "POST"
-        request.contentType = "application/json"
-        request.json = '{"service":{"name":"unittest"}}'
+        controller.request.method = "POST"
+        controller.request.contentType = "application/json"
+        controller.request.json = '{"service":{"name":"unittest"}}'
+        def json = JSON.parse('{"service":{"name":"unittest"}}')
 
         when: "index action is called"
         controller.index()
 
         then: "status should be 200 and contentType as JSON"
-        response.status == 200
-        response.contentType == "application/json;charset=UTF-8"
+        controller.response.status == 200
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
     }
 
     void "test status 400 with invalid JSON"() {
         given: "the request object is setup with a syntactically bad JSON"
-        request.method = "POST"
-        request.contentType = "application/json"
-        request.json = '{"service":{"name":"unittest"}' // missing last }
+        controller.request.method = "POST"
+        controller.request.contentType = "application/json"
+        controller.request.json = '{"service":{"name":"unittest"}' // missing last }
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}}')
 
         when: "index action is called"
         controller.index()
 
         then: "response status should be 400"
-        response.status == 400
+        controller.response.status == 400
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
+    }
+
+    void "test status 400 with empty text"() {
+        given:
+        controller.request.method = "POST"
+        controller.request.contentType = "application/json"
+        controller.request.content = "".bytes
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}}')
+
+        when: "index action is called"
+        controller.index()
+
+        then: "response status should be 400"
+        controller.response.status == 400
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
     }
 
     void "message has service key with valid message"() {
@@ -105,5 +136,19 @@ class ServiceControllerSpec extends Specification {
 
         expect:
         controller.checkForValidServiceObject(message) is false
+    }
+
+    void "how does JSON.parse work"() {
+        given:
+        controller.request.method = "POST"
+        controller.request.contentType = "application/json"
+        controller.request.content = "".bytes
+
+        when:
+        def text = controller.request.reader.text
+        def json = controller.request.JSON
+
+        then:
+        true
     }
 }
