@@ -67,6 +67,8 @@ class ServiceController {
         render(contentType: 'application/json', status: httpStatus) {
             if (log.isTraceEnabled()) {
                 log.trace "Returning message = \"${message.toString()}\""
+                log.trace "Content-Type: application/json"
+                log.trace "status = $httpStatus"
             }
             message
         }

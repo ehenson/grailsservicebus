@@ -28,7 +28,7 @@ class ServiceUtilSpec extends Specification {
         ServiceUtil.hasException(message) is true
     }
 
-    void "test thowException as normal"() {
+    void "test throwException as normal"() {
         when:
         ServiceUtil.throwException(message, "unitTestType", "unit test message")
 
@@ -38,7 +38,7 @@ class ServiceUtilSpec extends Specification {
                         exceptionType: "unitTestType", exceptionMessage: "unit test message"]]
     }
 
-    void "test thowException with action specified"() {
+    void "test throwException with action specified"() {
         when:
         ServiceUtil.throwException(message, "unitTestType", "unit test message", "action type", "action name")
 
