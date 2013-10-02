@@ -90,6 +90,21 @@ class ServiceControllerSpec extends Specification {
         controller.response.contentType == "application/json;charset=UTF-8"
     }
 
+    void "test status 400 with no text"() {
+        given:
+        controller.request.method = "POST"
+        controller.request.contentType = "application/json"
+        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
+
+        when: "index action is called"
+        controller.index()
+
+        then:
+        controller.response.status == 406
+        controller.response.json == json
+        controller.response.contentType == "application/json;charset=UTF-8"
+    }
+
     void "message has service key with valid message"() {
         given: "a properly build message"
         def message = [service: [name: 'unittest']]
