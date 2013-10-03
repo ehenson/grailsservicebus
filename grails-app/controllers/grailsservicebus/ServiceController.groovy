@@ -14,54 +14,67 @@ class ServiceController {
             log.trace "Checking request method for POST"
         }
 
-        if (request.method == 'POST') {
-            if (log.isTraceEnabled()) {
-                log.trace "Request method is POST"
-                log.trace "Checking request format to be JSON"
-            }
-            if (request.format == 'json') {
-                log.trace "Request has format of JSON"
+        try {
 
-                try {
-                    log.trace "Getting JSON object of Message in the request"
-                    message = request.JSON
-                } catch (org.codehaus.groovy.grails.web.converters.exceptions.ConverterException e) {
-                    log.error("JSON parsing error in Message", e)
-                    ServiceUtil.throwException(message, "ServiceProtocolException", "Message JSON syntax error")
-                    httpStatus = 400
+            if (request.method == 'POST') {
+                if (log.isTraceEnabled()) {
+                    log.trace "Request method is POST"
+                    log.trace "Checking request format to be JSON"
                 }
+                if (request.format == 'json') {
+                    log.trace "Request has format of JSON"
 
-                // at this point JSON is validated by Grails
-                if (httpStatus == 200) {
-                    if (log.isTraceEnabled()) {
-                        log.trace "Message = \"${message}\""
-                        log.trace "Checking for valid service object"
+                    try {
+                        log.trace "Getting JSON object of Message in the request"
+                        message = request.JSON
+                    } catch (org.codehaus.groovy.grails.web.converters.exceptions.ConverterException e) {
+                        log.error("JSON parsing error in Message", e)
+                        ServiceUtil.throwException(message, "ServiceProtocolException", "Message JSON syntax error")
+                        httpStatus = 400
                     }
 
-                    // check for valid service object and throwException if not
-                    if (checkForValidServiceObject(message)) {
-                        // message is good at this point
-                        log.trace "Message has a proper service object"
-                    } else {
+                    // at this point JSON is validated by Grails
+                    if (httpStatus == 200) {
                         if (log.isTraceEnabled()) {
-                            log.trace "Message does not have a proper service object"
-                            log.trace "throwing a message exception and setting status to 400"
+                            log.trace "Message = \"${message}\""
+                            log.trace "Checking for valid service object"
                         }
-                        ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
-                        httpStatus = 406
+
+                        // check for valid service object and throwException if not
+                        if (checkForValidServiceObject(message)) {
+                            // message is good at this point
+                            log.trace "Message has a proper service object"
+
+                            // This is for unit testing.  Consider a different way of testing an uncaught exception and remove this.
+                            if (message.npe) throw NullPointerException();
+
+/***************************   Main Driver part of service engine begins here **************************/
+
+                        } else {
+                            if (log.isTraceEnabled()) {
+                                log.trace "Message does not have a proper service object"
+                                log.trace "throwing a message exception and setting status to 400"
+                            }
+                            ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
+                            httpStatus = 406
+                        }
                     }
+                } else {
+                    // not json
+                    log.error "Content type is not JSON.  Setting status to 406."
+                    ServiceUtil.throwException(message, "ServiceProtocolException", "Only JSON Content Types are supported.")
+                    httpStatus = 406
                 }
             } else {
-                // not json
-                log.error "Content type is not JSON.  Setting status to 406."
-                ServiceUtil.throwException(message, "ServiceProtocolException", "Only JSON Content Types are supported.")
-                httpStatus = 406
+                // not post
+                log.error "Request method is not POST.  Setting status to 405."
+                ServiceUtil.throwException(message, "ServiceProtocolException", "Non POST request are not supported.")
+                httpStatus = 405
             }
-        } else {
-            // not post
-            log.error "Request method is not POST.  Setting status to 405."
-            ServiceUtil.throwException(message, "ServiceProtocolException", "Non POST request are not supported.")
-            httpStatus = 405
+        } catch (Exception e) {
+            log.error "Uncaught Error.  Setting status to 500."
+            ServiceUtil.throwException(message, "UncaughtException", "An uncaught exception as occured.")
+            httpStatus = 500
         }
 
         render(contentType: 'application/json', status: httpStatus) {
@@ -72,6 +85,7 @@ class ServiceController {
             }
             message
         }
+
         log.trace("Leaving index()")
     }
 
