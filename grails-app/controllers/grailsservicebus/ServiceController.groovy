@@ -49,7 +49,17 @@ class ServiceController {
                             if (message.npe) throw NullPointerException();
 
 /***************************   Main Driver part of service engine begins here **************************/
+                             // use ConfigSlurper for the definition files: http://mrhaki.blogspot.com/2009/10/groovy-goodness-using-configslurper.html
+                             // support "environments"
 
+                            // to find the current environment
+                            // grails.util.Environment.current
+
+                            // for the "production" use of the ConfigSlurper("<env name>") you have to have a "runtime"
+                            // environment such as "production-test".
+                            // this will allow to have a production built WAR but it can have modes to have normal and test
+                            // where test can read config.groovy files are runtime and then the settings can be overriden in a test environment
+                            // on a customer's machine.
                         } else {
                             if (log.isTraceEnabled()) {
                                 log.trace "Message does not have a proper service object"
