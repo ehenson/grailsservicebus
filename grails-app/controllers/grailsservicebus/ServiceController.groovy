@@ -1,21 +1,40 @@
 package grailsservicebus
-
 import org.apache.commons.logging.LogFactory
 
 class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
 
     def index() {
-        def message = [:]
-        def httpStatus = 200
-
         if (log.isTraceEnabled()) {
             log.trace "Entered index()"
+            log.trace "getting servlet Async context"
+        }
+        def ctx = startAsync()
+        log.trace "Starting Async index()"
+        ctx.start {
+            log.trace "Processing request in async block"
+            processRequest()
+            log.trace "Finished processing request.  Conpleting Async servlet to close connection"
+            ctx.complete()
+            log.trace "Leaving async index()"
+        }
+        log.trace("Leaving index()")
+    }
+
+    /**
+     * This is so the main logic can be unit tested outside of the async index()
+     * @return
+     */
+    private def processRequest() {
+        if (log.isTraceEnabled()) {
+            log.trace "Entered processRequest()"
             log.trace "Checking request method for POST"
         }
 
-        try {
+        def message = [:]
+        def httpStatus = 200
 
+        try {
             if (request.method == 'POST') {
                 if (log.isTraceEnabled()) {
                     log.trace "Request method is POST"
@@ -48,9 +67,9 @@ class ServiceController {
                             // This is for unit testing.  Consider a different way of testing an uncaught exception and remove this.
                             if (message.npe) throw NullPointerException();
 
-/***************************   Main Driver part of service engine begins here **************************/
-                             // use ConfigSlurper for the definition files: http://mrhaki.blogspot.com/2009/10/groovy-goodness-using-configslurper.html
-                             // support "environments"
+                            /***************************   Main Driver part of service engine begins here **************************/
+                            // use ConfigSlurper for the definition files: http://mrhaki.blogspot.com/2009/10/groovy-goodness-using-configslurper.html
+                            // support "environments"
 
                             // to find the current environment
                             // grails.util.Environment.current
@@ -96,7 +115,7 @@ class ServiceController {
             message
         }
 
-        log.trace("Leaving index()")
+        log.trace("Leaving processRequest()");
     }
 
     /**

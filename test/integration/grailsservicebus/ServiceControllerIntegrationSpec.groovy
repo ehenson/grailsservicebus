@@ -19,7 +19,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then: "response status should be 405"
         controller.response.json == json
@@ -34,7 +34,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then: "response status should be 406"
         controller.response.status == 406
@@ -50,7 +50,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"service":{"name":"unittest"}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then: "status should be 200 and contentType as JSON"
         controller.response.status == 200
@@ -66,7 +66,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then: "response status should be 400"
         controller.response.status == 400
@@ -82,7 +82,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then:
         controller.response.status == 406
@@ -97,7 +97,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then:
         controller.response.status == 406
@@ -116,7 +116,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         def json = JSON.parse('{"npe":true,"service":{"name":"npe"},"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"UncaughtException","exceptionMessage":"An uncaught exception as occured."}}')
 
         when: "index action is called"
-        controller.index()
+        controller.processRequest()
 
         then:
         controller.response.status == 500
