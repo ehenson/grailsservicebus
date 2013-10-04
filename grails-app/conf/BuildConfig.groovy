@@ -50,6 +50,20 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         // runtime 'mysql:mysql-connector-java:5.1.24'
         test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+
+        test "org.codehaus.geb:geb-core:0.6.0",
+                "org.gmock:gmock:0.8.1"
+        test    "org.codehaus.groovy.modules.http-builder:http-builder:0.5.0", {
+            excludes "commons-logging", "httpclient", "xml-apis", "groovy"
+        }
+        test    "org.seleniumhq.selenium:selenium-htmlunit-driver:2.0a7", {
+            excludes "htmlunit", "xml-apis"
+        }
+        test    "net.sourceforge.htmlunit:htmlunit:2.8", {
+            excludes "xml-apis", "commons-logging"
+        }
+
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
@@ -69,7 +83,9 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0.1"
         //runtime ":cached-resources:1.1"
         //runtime ":yui-minify-resources:0.1.5"
-        test(":spock:0.7") {
+        test    ":geb:0.6.0",
+                ":spock:0.7", {
+            excludes 'xml-apis'
             exclude "spock-grails-support"
         }
     }

@@ -6,7 +6,7 @@ import spock.lang.Specification
 /**
  *
  */
-class ServiceControllerSpec extends Specification {
+class ServiceControllerIntegrationSpec extends Specification {
     ServiceController controller
     
     def setup() {
