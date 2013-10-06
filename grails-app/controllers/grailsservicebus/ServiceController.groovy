@@ -1,5 +1,7 @@
 package grailsservicebus
+
 import org.apache.commons.logging.LogFactory
+import static grails.async.Promises.*
 
 class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
@@ -7,18 +9,13 @@ class ServiceController {
     def index() {
         if (log.isTraceEnabled()) {
             log.trace "Entered index()"
-            log.trace "getting servlet Async context"
         }
-        def ctx = startAsync()
-        log.trace "Starting Async index()"
-        ctx.start {
-            log.trace "Processing request in async block"
+        task {
+            log.trace "Processing request in a task block"
             processRequest()
-            log.trace "Finished processing request.  Conpleting Async servlet to close connection"
-            ctx.complete()
-            log.trace "Leaving async index()"
+            log.trace "Finished processing request.  Completing Task."
         }
-        log.trace("Leaving index()")
+        log.trace "Leaving index()"
     }
 
     /**
@@ -115,7 +112,7 @@ class ServiceController {
             message
         }
 
-        log.trace("Leaving processRequest()");
+        log.trace "Leaving processRequest()"
     }
 
     /**
