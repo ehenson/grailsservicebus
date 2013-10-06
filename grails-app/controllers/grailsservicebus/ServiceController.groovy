@@ -97,15 +97,15 @@ class ServiceController {
                 ServiceUtil.throwException(message, "ServiceProtocolException", "Non POST request are not supported.")
                 httpStatus = 405
             }
-        } catch (Exception e) {
-            log.error "Uncaught Error.  Setting status to 500."
-            ServiceUtil.throwException(message, "UncaughtException", "An uncaught exception as occured.")
+        } catch (Throwable e) {
+            log.error "Uncaught Error.  Setting status to 500. Throwable.message = \"${e.message}\""
+            ServiceUtil.throwException(message, "UncaughtException", "An uncaught exception as occurred.")
             httpStatus = 500
         }
 
         render(contentType: 'application/json', status: httpStatus) {
             if (log.isTraceEnabled()) {
-                log.trace "Returning message = \"${message.toString()}\""
+                log.trace "Returning message = \"${message}\""
                 log.trace "Content-Type: application/json"
                 log.trace "status = $httpStatus"
             }
