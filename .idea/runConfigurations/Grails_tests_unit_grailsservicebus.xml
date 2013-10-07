@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Grails tests:functional:grailsservicebus" type="GrailsRunConfigurationType" factoryName="Grails" singleton="true">
+  <configuration default="false" name="Grails tests:unit:grailsservicebus" type="GrailsRunConfigurationType" factoryName="Grails" singleton="true">
     <module name="Grails Service Bus" />
     <setting name="vmparams" value="" />
-    <setting name="cmdLine" value="test-app :functional" />
+    <setting name="cmdLine" value="test-app :unit" />
     <setting name="depsClasspath" value="false" />
     <setting name="passParentEnv" value="true" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
