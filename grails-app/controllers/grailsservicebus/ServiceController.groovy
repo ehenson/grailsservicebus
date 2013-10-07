@@ -5,6 +5,7 @@ import static grails.async.Promises.*
 
 class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
+    ServiceEngineService serviceEngineService
 
     def index() {
         if (log.isTraceEnabled()) {
@@ -63,6 +64,8 @@ class ServiceController {
 
                             // This is for unit testing.  Consider a different way of testing an uncaught exception and remove this.
                             if (message.npe) throw NullPointerException();
+
+                            serviceEngineService.execute(message)
 
                             /***************************   Main Driver part of service engine begins here **************************/
                             // use ConfigSlurper for the definition files: http://mrhaki.blogspot.com/2009/10/groovy-goodness-using-configslurper.html
