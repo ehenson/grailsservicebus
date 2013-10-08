@@ -8,7 +8,10 @@ class ServiceController {
     ServiceEngineService serviceEngineService
 
     def index() {
-        log.trace "Entered index()"
+        if (log.isTraceEnabled()) {
+            log.trace "Entered index()"
+            log.trace "Going Async as a task."
+        }
         // assigning so the "return" can be logged
         def webTask = task {
             log.trace "Processing the request in a task closure"
@@ -65,7 +68,9 @@ class ServiceController {
                             // This is for unit testing.  Consider a different way of testing an uncaught exception and remove this.
                             if (message.npe) throw NullPointerException();
 
+                            log.trace "Executing the service engine"
                             serviceEngineService.execute(message)
+                            log.trace "Finished executing the service engine"
 
                             /***************************   Main Driver part of service engine begins here **************************/
                             // use ConfigSlurper for the definition files: http://mrhaki.blogspot.com/2009/10/groovy-goodness-using-configslurper.html
@@ -123,9 +128,9 @@ class ServiceController {
      * @param message
      * @return boolean
      */
-    private def checkForValidServiceObject(def message) {
+    private def checkForValidServiceObject(message) {
         if (log.isTraceEnabled()) {
-            log.trace "Entered def checkForValidServiceObject(def message)"
+            log.trace "Entered def checkForValidServiceObject(message)"
             log.trace "message = \"${message}\""
             log.trace "setting default return value to false"
         }
@@ -180,7 +185,7 @@ class ServiceController {
 
         if (log.isTraceEnabled()) {
             log.trace "returning success = ${success}"
-            log.trace "leaving def checkForValidServiceObject(def message)"
+            log.trace "leaving def checkForValidServiceObject(message)"
         }
         return success
     }

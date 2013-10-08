@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Grails tests:grailsservicebus" type="GrailsRunConfigurationType" factoryName="Grails" singleton="true">
+  <configuration default="false" name="Grails:run:grailsservicebus" type="GrailsRunConfigurationType" factoryName="Grails" singleton="true">
     <module name="Grails Service Bus" />
     <setting name="vmparams" value="" />
-    <setting name="cmdLine" value="test-app" />
+    <setting name="cmdLine" value="run-app" />
     <setting name="depsClasspath" value="false" />
     <setting name="passParentEnv" value="true" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-    <setting name="launchBrowser" value="false" />
+    <setting name="launchBrowser" value="true" />
     <RunnerSettings RunnerId="GrailsMavenDebuggerRunner">
       <option name="DEBUG_PORT" value="" />
       <option name="TRANSPORT" value="0" />

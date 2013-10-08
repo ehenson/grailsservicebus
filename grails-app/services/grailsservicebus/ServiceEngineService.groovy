@@ -8,25 +8,46 @@ class ServiceEngineService {
     private static final log = LogFactory.getLog(this)
     def grailsApplication
 
-    def execute(def message) {
+    def execute(message) {
         if (log.isTraceEnabled()) {
-            log.trace "Entered def execute(def message)"
+            log.trace "Entered def execute(message)"
             log.trace "message = \"${message}\""
         }
+
         def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
 
-        log.trace "definitionDir = \"${definitionDir}\""
-        log.trace "Current Environment = \"${Environment.current.name}\""
+        if (log.isTraceEnabled()) {
+            log.trace "definitionDir = \"${definitionDir}\""
+            log.trace "Current Environment = \"${Environment.current.name}\""
+        }
 
         def configSlurper = new ConfigSlurper(Environment.current.name)
         //do bindings here
         def definitionFile = new File("${definitionDir}/${message.service.name}.groovy")
+        log.trace "definitionFile = \"${definitionFile}\""
+
         if (definitionFile.exists()) {
+            log.trace "Definition file exists.  Parsing with ConfigSlurper"
             def serviceConfig = configSlurper.parse(definitionFile.toURI().toURL())
-            def serviceHandler = grailsApplication.mainContext."${serviceConfig.handler}ServiceHandlerService"
-            serviceHandler.execute serviceConfig, message, [:]
+            def serviceHandlerName = "${serviceConfig.handler}ServiceHandlerService"
+            log.trace "Loading \"${serviceHandlerName}\" service"
+            def serviceHandler = grailsApplication.mainContext."${serviceHandlerName}"
+            def properties = [:]
+            if (log.isTraceEnabled()) {
+                log.trace "Executing the service with:"
+                log.trace "message = \"${message}\""
+                log.trace "properties = \"${properties}\""
+            }
+            serviceHandler.execute serviceConfig, message, properties
+            log.trace "Finished executing service"
         } else {
-            log.error "Definition file \"${definitionFile}\" does not exist."
+            def errorMessage = "Definition file \"${definitionFile}\" does not exist."
+            log.error errorMessage
+            ServiceUtil.throwException(message, "ServiceRegistryException", errorMessage)
+        }
+        if (log.isTraceEnabled()) {
+            log.trace "returning message = \"${message}\""
+            log.trace "Leaving def execute(message)"
         }
     }
 }

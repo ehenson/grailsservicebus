@@ -13,16 +13,16 @@ public class ServiceUtil {
      * @param message
      * @return boolean
      */
-    public static def hasException(def message) {
+    public static def hasException(message) {
         Log log = LogFactory.getLog(this)
         if (log.isTraceEnabled()) {
-            log.trace "Entered static def hasException(def message)"
+            log.trace "Entered static def hasException(message)"
             log.trace "message = \"$message\""
         }
         def value = message['exception'] != null
         if (log.isTraceEnabled()) {
             log.trace "returning value = \"$value\""
-            log.trace "Leaving static def hasException(def message)"
+            log.trace "Leaving static def hasException(message)"
         }
         value
     }
@@ -35,12 +35,10 @@ public class ServiceUtil {
      * @param actionType
      * @param actionName
      */
-    public static void throwException(
-            def message,
-            def exceptionType, def exceptionMessage, def actionType = "groovy", def actionName = "unknown") {
+    public static void throwException(message, exceptionType, exceptionMessage, actionType = "groovy", actionName = "unknown") {
         Log log = LogFactory.getLog(this)
         if (log.isTraceEnabled()) {
-            log.trace "Entered static void throwException(def message, def exceptionType, def exceptionMessage, def actionType = \"groovy\", def actionName = \"unknown\")"
+            log.trace "Entered static void throwException(message, exceptionType, exceptionMessage, actionType = \"groovy\", actionName = \"unknown\")"
             log.trace "message = \"$message\""
             log.trace "exceptionType = \"$exceptionType\""
             log.trace "exceptionMessage = \"$exceptionMessage\""
@@ -78,7 +76,7 @@ public class ServiceUtil {
         log.trace "adding exceptions to the message"
         message.exception = exceptions
 
-        log.trace "Leaving static void throwException(def message, def exceptionType, def exceptionMessage, def actionType = \"groovy\", def actionName = \"unknown\")"
+        log.trace "Leaving static void throwException(message, exceptionType, exceptionMessage, actionType = \"groovy\", actionName = \"unknown\")"
     }
 
     /**
@@ -99,10 +97,10 @@ public class ServiceUtil {
      * @return boolean true if the message validates the interface
      * @throws NullPointerException if message or serviceInterface is null
      */
-    def static verifyInterface(def message, def serviceInterface) {
+    def static verifyInterface(message, serviceInterface) {
         Log log = LogFactory.getLog(this)
         if (log.isTraceEnabled()) {
-            log.trace "Entered static verifyInterface(def message, def interface)"
+            log.trace "Entered static verifyInterface(message, interface)"
             log.trace "message = \"$message\""
             log.trace "interface = \"$serviceInterface"
             log.trace "checking params for null"
@@ -278,7 +276,7 @@ public class ServiceUtil {
 
         if (log.isTraceEnabled()) {
             log.trace "returning validation of = ${returnCode}"
-            log.trace "Leaving static verifyInterface(def message, def interface)"
+            log.trace "Leaving static verifyInterface(message, interface)"
         }
         return returnCode
     }
@@ -291,10 +289,10 @@ public class ServiceUtil {
      * @throws NullPointerException if needle or haystack is null
      * @throws IllegalArgumentException if needle or haystack is not an ArrayList or []
      */
-    public static boolean array_in_array(def needleList, def haystack) {
+    public static boolean array_in_array(needleList, haystack) {
         Log log = LogFactory.getLog(this)
         if (log.isTraceEnabled()) {
-            log.trace "Entered public static boolean array_in_array(def needleList, def haystack)"
+            log.trace "Entered public static boolean array_in_array(needleList, haystack)"
             log.trace "needleList = $needleList"
             log.trace "haystack = $haystack"
             log.trace "setting rc to false"
@@ -321,7 +319,7 @@ public class ServiceUtil {
         }
         if (log.isTraceEnabled()) {
             log.trace "Finished searching haystack.  returning rc = $rc"
-            log.trace "Leaving public static boolean array_in_array(def needleList, def haystack)"
+            log.trace "Leaving public static boolean array_in_array(needleList, haystack)"
         }
         return rc
     }
@@ -342,10 +340,10 @@ public class ServiceUtil {
      * @return String
      * @throws IllegalArgumentException when the type does not match a known JSON type
      */
-    public static def getRuntimeType(def value) {
+    public static def getRuntimeType(value) {
         Log log = LogFactory.getLog(this)
         if (log.isTraceEnabled()) {
-            log.trace "Entered public static def getRuntimeType(def value)"
+            log.trace "Entered public static def getRuntimeType(value)"
             log.trace "value = \"$value\""
             log.trace "value type is ${value.getClass()}"
             log.trace "checking value to be null"
@@ -374,7 +372,7 @@ public class ServiceUtil {
         }
         if (log.isTraceEnabled()) {
             log.trace "returning type = \"$type\""
-            log.trace "Leaving public static def getRuntimeType(def value)"
+            log.trace "Leaving public static def getRuntimeType(value)"
         }
         return type
     }
