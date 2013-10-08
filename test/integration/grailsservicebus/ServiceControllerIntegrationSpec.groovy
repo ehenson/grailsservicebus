@@ -16,7 +16,7 @@ class ServiceControllerIntegrationSpec extends Specification {
     void "test request method as GET"() {
         given: "request method is set to GET"
         controller.request.method = "GET"
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -31,7 +31,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         given: "request method is POST and contentType is xml"
         controller.request.method = "POST"
         controller.request.contentType = "text/xml"
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -63,7 +63,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
         controller.request.json = '{"service":{"name":"unittest"}' // missing last }
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Message JSON syntax error"}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -79,7 +79,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
         controller.request.content = "".bytes
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -94,7 +94,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         given:
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper \\"service\\" object"}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -113,7 +113,7 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
         controller.request.json = '{"service":{"name":"npe"},"npe" : true}'
-        def json = JSON.parse('{"npe":true,"service":{"name":"npe"},"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"UncaughtException","exceptionMessage":"An uncaught exception as occured."}}')
+        def json = JSON.parse('{"npe":true,"service":{"name":"npe"},"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"UncaughtException","exceptionMessage":"An uncaught exception as occurred."}]}')
 
         when: "index action is called"
         controller.processRequest()

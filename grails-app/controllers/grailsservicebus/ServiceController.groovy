@@ -8,15 +8,15 @@ class ServiceController {
     ServiceEngineService serviceEngineService
 
     def index() {
-        if (log.isTraceEnabled()) {
-            log.trace "Entered index()"
-        }
-        task {
-            log.trace "Processing request in a task block"
+        log.trace "Entered index()"
+        // assigning so the "return" can be logged
+        def webTask = task {
+            log.trace "Processing the request in a task closure"
             processRequest()
-            log.trace "Finished processing request.  Completing Task."
+            log.trace "Finished processing request.  Completing task."
         }
         log.trace "Leaving index()"
+        return webTask
     }
 
     /**
@@ -84,7 +84,7 @@ class ServiceController {
                                 log.trace "Message does not have a proper service object"
                                 log.trace "throwing a message exception and setting status to 400"
                             }
-                            ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper \"service\" object")
+                            ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper service object")
                             httpStatus = 406
                         }
                     }
@@ -106,16 +106,16 @@ class ServiceController {
             httpStatus = 500
         }
 
-        render(contentType: 'application/json', status: httpStatus) {
-            if (log.isTraceEnabled()) {
-                log.trace "Returning message = \"${message}\""
-                log.trace "Content-Type: application/json"
-                log.trace "status = $httpStatus"
-            }
-            message
+        if (log.isTraceEnabled()) {
+            log.trace "Returning message = \"${message}\""
+            log.trace "Content-Type: application/json"
+            log.trace "status = $httpStatus"
+            log.trace "Leaving processRequest() while rendering the message"
         }
 
-        log.trace "Leaving processRequest()"
+        render(contentType: 'application/json', status: httpStatus) {
+            message
+        }
     }
 
     /**

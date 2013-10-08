@@ -11,7 +11,7 @@ class ServiceControllerFunctionalSpec extends Specification {
     def "test request method as GET"() {
         given:
         RESTClient client = new RESTClient(url)
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Non POST request are not supported."}]}')
 
         when:
         HttpResponseDecorator response = client.get(path:path)
@@ -27,7 +27,7 @@ class ServiceControllerFunctionalSpec extends Specification {
 
     def "test for status 406 when contentType is not JSON"() {
         given: // http://coderberry.me/blog/2012/05/07/stupid-simple-post-slash-get-with-groovy-httpbuilder/
-        def json = JSON.parse('{"exception":{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}]}')
         HTTPBuilder http = new HTTPBuilder(url)
         HttpResponseDecorator httpResponse
         def text
