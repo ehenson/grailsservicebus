@@ -62,6 +62,9 @@ grails.project.dependency.resolution = {
         test    "net.sourceforge.htmlunit:htmlunit:2.8", {
             excludes "xml-apis", "commons-logging"
         }
+
+        //build 'com.h2database:h2:1.3.173'
+        compile 'net.sf.jt400:jt400-full:6.0'
     }
 
     plugins {

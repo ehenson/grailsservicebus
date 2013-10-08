@@ -7,9 +7,13 @@
 //                             "file:${userHome}/.grails/${appName}-config.properties",
 //                             "file:${userHome}/.grails/${appName}-config.groovy"]
 
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
+// this allows custom configuration at a known location
+grails.config.locations = ["file:/opt/grailsservicebus/etc/grails-config.groovy"]
+
+// this allows a custom configuration if specified
+if (System.properties["${appName}.config.location"]) {
+   grails.config.locations << "file:" + System.properties["${appName}.config.location"]
+}
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
@@ -117,5 +121,5 @@ log4j = {
             'org.hibernate',
             'net.sf.ehcache.hibernate'
 
-    trace 'grailsservicebus'
+    error 'grailsservicebus'
 }
