@@ -32,4 +32,27 @@ class UnitTest {
         then:
         message == [service:[name:"unittest"], hello:"world"]
     }
+
+    void "test a manually thrown NPE from the service"() {
+        def source = """
+package grailsservicebus.script.unittest
+
+class UnitTest {
+    def execute(message, properties) {
+        message.hello = "world"
+        throw new NullPointerException()
+    }
+}
+"""
+        def message = [service:[name:"unittest"]]
+        def properties = [:]
+
+        when:
+        scriptActionHandlerService.execute(source, message, properties)
+
+        then:
+        println message
+        message == [service:[name:"unittest"], hello:"world"]
+
+    }
 }
