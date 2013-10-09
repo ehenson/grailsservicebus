@@ -1,10 +1,8 @@
 package grailsservicebus
-
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
-
 //import grails.transaction.Transactional
 //
 //@Transactional

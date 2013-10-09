@@ -7,16 +7,13 @@ import org.apache.commons.logging.LogFactory
 class ServiceEngineService {
     private static final log = LogFactory.getLog(this)
     def grailsApplication
+    def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
+
 
     def execute(message) {
         if (log.isTraceEnabled()) {
             log.trace "Entered def execute(message)"
             log.trace "message = \"${message}\""
-        }
-
-        def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
-
-        if (log.isTraceEnabled()) {
             log.trace "definitionDir = \"${definitionDir}\""
             log.trace "Current Environment = \"${Environment.current.name}\""
         }
