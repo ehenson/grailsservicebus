@@ -26,7 +26,7 @@ class ServiceEngineService {
         if (definitionFile.exists()) {
             log.trace "Definition file exists.  Parsing with ConfigSlurper"
             def serviceConfig = configSlurper.parse(definitionFile.toURI().toURL())
-            def serviceHandlerName = "${serviceConfig.handler}ServiceHandlerService"
+            def serviceHandlerName = "${serviceConfig.handler}ActionHandlerService"
             log.trace "Loading \"${serviceHandlerName}\" service"
             def serviceHandler = grailsApplication.mainContext."${serviceHandlerName}"
             def properties = [:]
