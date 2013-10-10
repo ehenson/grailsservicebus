@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext
 //@Transactional
 class ScriptActionHandlerService {
     private static final log = LogFactory.getLog(this)
+    static transactional = false
 
     def execute(sourceObject, message, properties) {
         if (log.isTraceEnabled()) {

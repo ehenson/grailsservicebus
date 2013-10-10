@@ -1,25 +1,16 @@
 package grailsservicebus
-
 import org.apache.commons.logging.LogFactory
-import static grails.async.Promises.*
 
 class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
     ServiceEngineService serviceEngineService
 
+
     def index() {
-        if (log.isTraceEnabled()) {
-            log.trace "Entered index()"
-            log.trace "Going Async as a task."
-        }
-        // assigning so the "return" can be logged
-        def webTask = task {
-            log.trace "Processing the request in a task closure"
-            processRequest()
-            log.trace "Finished processing request.  Completing task."
-        }
+        log.trace "Entered index()"
+        def webRender = processRequest()
         log.trace "Leaving index()"
-        return webTask
+        return webRender
     }
 
     /**

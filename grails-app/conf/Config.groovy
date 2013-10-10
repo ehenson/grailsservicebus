@@ -99,10 +99,11 @@ environments {
 
 // log4j configuration
 log4j = {
-    root {
-//        trace()
-        info()
-    }
+//    root {
+   //     trace()
+//        info()
+//    }
+
     // Example of changing the log pattern for the default console appender:
     //
     //appenders {
@@ -119,7 +120,7 @@ log4j = {
             'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
             'org.springframework',
             'org.hibernate',
-            'net.sf.ehcache.hibernate'
-
-    error 'grailsservicebus'
+            'net.sf.ehcache.hibernate',
+            'grailsservicebus'
+    //trace 'grailsservicebus'
 }

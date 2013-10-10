@@ -7,19 +7,20 @@ import org.apache.commons.logging.LogFactory
 class ServiceEngineService {
     private static final log = LogFactory.getLog(this)
     def grailsApplication
-    def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
 
+    static transactional = false
 
     def execute(message) {
         if (log.isTraceEnabled()) {
             log.trace "Entered def execute(message)"
             log.trace "message = \"${message}\""
-            log.trace "definitionDir = \"${definitionDir}\""
             log.trace "Current Environment = \"${Environment.current.name}\""
         }
 
         def configSlurper = new ConfigSlurper(Environment.current.name)
         //do bindings here
+        def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
+        log.trace "definitionDir = \"${definitionDir}\""
         def definitionFile = new File("${definitionDir}/${message.service.name}.groovy")
         log.trace "definitionFile = \"${definitionFile}\""
 
