@@ -55,7 +55,7 @@ class ScriptActionHandlerService {
 
         if (script != null) {
             log.trace "processing script"
-            def groovySource = new GroovyCodeSource(script, scriptName, "/groovy/shell")
+            def groovySource = new GroovyCodeSource(script, scriptName, scriptName)
             GroovyClassLoader gcl = new GroovyClassLoader(this.getClass().getClassLoader())
 
             log.trace "Parsing the source and caching"

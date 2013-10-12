@@ -95,6 +95,10 @@ environments {
         grails.logging.jul.usebridge = false
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
+    test {
+        // do not remove.  This is for the unit tests
+        unittest.sample = "test"
+    }
 }
 
 // log4j configuration
@@ -124,3 +128,4 @@ log4j = {
             'grailsservicebus'
     //trace 'grailsservicebus'
 }
+
