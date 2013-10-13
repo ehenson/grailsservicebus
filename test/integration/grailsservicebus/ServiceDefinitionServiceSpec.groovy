@@ -178,4 +178,18 @@ action {
         then:
         definition == result
     }
+
+    void "testNew"() {
+        given:
+        def service = "testservice"
+
+        when:
+        def definition = serviceDefinitionService.getScriptClass(service)
+        println "definition 1 = \"${definition}\""
+        definition = serviceDefinitionService.getScriptClass(service)
+        println "definition 2 = \"${definition}\""
+
+        then:
+        true
+    }
 }
