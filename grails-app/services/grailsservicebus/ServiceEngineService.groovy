@@ -11,6 +11,8 @@ class ServiceEngineService {
 
     static transactional = false
 
+    @org.grails.plugins.yammermetrics.groovy.Timed
+    @org.grails.plugins.yammermetrics.groovy.Metered
     def execute(message) {
         if (log.isTraceEnabled()) {
             log.trace "Entered def execute(message)"

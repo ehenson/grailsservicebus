@@ -35,6 +35,8 @@ class ServiceDefinitionService {
      * @param serviceName
      * @return map of the definition
      */
+    @org.grails.plugins.yammermetrics.groovy.Timed
+    @org.grails.plugins.yammermetrics.groovy.Metered
     def getDefinition(String serviceName) {
         if (log.isTraceEnabled()) {
             log.trace "Entered getDefinition(String serviceName)"

@@ -10,6 +10,8 @@ class ScriptActionHandlerService {
     private static final log = LogFactory.getLog(this)
     static transactional = false
 
+    @org.grails.plugins.yammermetrics.groovy.Timed
+    @org.grails.plugins.yammermetrics.groovy.Metered
     def execute(action, message, properties) {
         if (log.isTraceEnabled()) {
             log.trace "Entered def execute(action, message, properties)"

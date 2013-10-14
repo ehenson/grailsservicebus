@@ -5,7 +5,8 @@ class ServiceController {
     private static final log = LogFactory.getLog(ServiceController.class)
     ServiceEngineService serviceEngineService
 
-
+    @org.grails.plugins.yammermetrics.groovy.Timed
+    @org.grails.plugins.yammermetrics.groovy.Metered
     def index() {
         log.trace "Entered index()"
         def webRender = processRequest()

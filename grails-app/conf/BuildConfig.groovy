@@ -71,6 +71,8 @@ grails.project.dependency.resolution = {
         // plugins for the build system only
         build ":tomcat:7.0.42"
 
+        compile ":yammer-metrics:2.1.2-6"
+
         // plugins for the compile step
         compile ":scaffolding:2.0.0"
         compile ':cache:1.1.1'
