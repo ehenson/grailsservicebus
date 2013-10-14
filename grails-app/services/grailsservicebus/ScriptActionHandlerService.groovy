@@ -10,10 +10,10 @@ class ScriptActionHandlerService {
     private static final log = LogFactory.getLog(this)
     static transactional = false
 
-    def execute(sourceObject, message, properties) {
+    def execute(action, message, properties) {
         if (log.isTraceEnabled()) {
-            log.trace "Entered def execute(sourceObject, message, properties)"
-            log.trace "sourceObject = \"${sourceObject}\""
+            log.trace "Entered def execute(action, message, properties)"
+            log.trace "action = \"${action}\""
             log.trace "message = \"${message}\""
             log.trace "properties = \"${properties}\""
             log.trace "setting script to default of null"
@@ -22,29 +22,29 @@ class ScriptActionHandlerService {
         def script
         def scriptName
 
-        log.trace "Checking the type of sourceObject to get the script"
-        if (sourceObject instanceof Map) {
+        log.trace "Checking the type of action to get the script"
+        if (action instanceof Map) {
             if (log.isTraceEnabled()) {
-                log.trace "sourceObject is a map.  Getting file name of the script"
-                log.trace "filename = \"${sourceObject.file}\""
+                log.trace "action is a map.  Getting file name of the script"
+                log.trace "filename = \"${action.file}\""
             }
-            def sourceFile = new File(sourceObject.file)
-            scriptName = sourceObject.file
+            def sourceFile = new File(action.file)
+            scriptName = action.file
 
             if (sourceFile.exists() && sourceFile.isFile() && sourceFile.canRead()) {
                 log.trace "file exists, is a file, and is readable"
                 script = sourceFile.text
             } else {
-                def errormsg = "Script is not found at \"${sourceObject.file}\" or is not a file or is not readable"
+                def errormsg = "Script is not found at \"${action.file}\" or is not a file or is not readable"
                 log.error errormsg
                 ServiceUtil.throwException(message, "ScriptActionHandlerServiceException", errormsg)
             }
-        } else if(sourceObject instanceof String) {
-            log.trace "sourceObject is a String"
-            script = sourceObject
+        } else if(action instanceof String) {
+            log.trace "action is a String"
+            script = action
             scriptName = "source as string"
         } else {
-            def errormsg = "sourceObject is of the wrong type"
+            def errormsg = "action is of the wrong type"
             log.error errormsg
             ServiceUtil.throwException(message, "ScriptActionHandlerServiceException", errormsg)
         }
@@ -81,7 +81,7 @@ class ScriptActionHandlerService {
         if (log.isTraceEnabled()) {
             log.trace "Finished executing the script."
             log.trace "message = \"${message}\""
-            log.trace "Leaving def execute(sourceObject, message, properties)"
+            log.trace "Leaving def execute(action, message, properties)"
         }
     }
 }
