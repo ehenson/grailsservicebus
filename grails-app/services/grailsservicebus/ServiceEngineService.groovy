@@ -1,9 +1,7 @@
 package grailsservicebus
 
 import org.apache.commons.logging.LogFactory
-//import grails.transaction.Transactional
-//
-//@Transactional
+
 class ServiceEngineService {
     private static final log = LogFactory.getLog(this)
     def grailsApplication
@@ -17,29 +15,28 @@ class ServiceEngineService {
         if (log.isTraceEnabled()) {
             log.trace "Entered def execute(message)"
             log.trace "message = \"${message}\""
-//            log.trace "Current Environment = \"${Environment.current.name}\""
         }
 
-//        def configSlurper = new ConfigSlurper(Environment.current.name)
-        //do bindings here
-//        def definitionDir = System.getProperty("grailservicebus.definition.directory", "/opt/grailsservicebus/definitions")
-//        log.trace "definitionDir = \"${definitionDir}\""
-//        def definitionFile = new File("${definitionDir}/${message.service.name}.groovy")
-//        log.trace "definitionFile = \"${definitionFile}\""
+        log.trace "Getting definition of service name = \"${message.service.name}\""
+        def definition = serviceDefinitionService.getDefinition(message.service.name, message)
 
-//        if (definitionFile.exists()) {
-//            log.trace "Definition file exists.  Parsing with ConfigSlurper"
-//            def serviceConfig = configSlurper.parse(definitionFile.toURI().toURL())
-
-        def definition = serviceDefinitionService.getDefinition(message.service.name)
+        if (log.isTraceEnabled()) {
+            log.trace "definition = \"${definition}\""
+            log.trace "looping actions"
+        }
 
         for(action in definition.actions) {
+            if (log.isTraceEnabled()) {
+                log.trace "Action = \"${action}\""
+            }
             def actionHandlerName = "${action.handler}ActionHandlerService"
+
             log.trace "Loading \"${actionHandlerName}\" service"
             def actionHandler = grailsApplication.mainContext."${actionHandlerName}"
 
             if (log.isTraceEnabled()) {
                 log.trace "Executing the action with:"
+                log.trace "action = \"${action}\""
                 log.trace "message = \"${message}\""
                 log.trace "properties = \"${action.properties}\""
             }

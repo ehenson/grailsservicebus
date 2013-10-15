@@ -111,7 +111,7 @@ parameter name: "lastName",  required: false, default: "Henson", type: "string"
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -176,7 +176,7 @@ action (file:"file6") {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -197,7 +197,7 @@ action {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -220,7 +220,7 @@ action {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -243,7 +243,7 @@ action {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -266,7 +266,7 @@ action {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -288,7 +288,7 @@ action {
         new File(definitionFilename).write(script)
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         definition == result
@@ -296,9 +296,50 @@ action {
 
     void "test default"() {
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName)
+        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
 
         then:
         resultDefinition == definition
     }
+
+    void "test service definition file not found"() {
+        given:
+        def message = [:]
+
+        when:
+        def definition = serviceDefinitionService.getDefinition("unittest.definition.missing", message)
+
+        then:
+        println message
+        thrown(groovy.util.ResourceException)
+    }
+
+    /**
+     * to catch any other error other than a file not found just catch an Exception and report a generic error for parsing
+     * definition
+     */
+    void "syntax error"() {
+        given:
+        def message = [:]
+        def script = """
+I am an obvious syntax error
+using "grailsApplication" alias "grails"
+
+action {
+    file "unit test file"
+    properties {
+        sample = grails.config.unittest.sample
+    }
+}
+"""
+        new File(definitionFilename).write(script)
+
+        when:
+        def definition = serviceDefinitionService.getDefinition(definitionName, message)
+
+        then:
+        println message
+        thrown(groovy.lang.MissingPropertyException)
+    }
+
 }

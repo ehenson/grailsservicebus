@@ -14,11 +14,11 @@ class ServiceDefinitionService {
     GroovyScriptEngine gse
     String[] urls = ["/opt/grailsservicebus/definitions"]
 
-    @PostConstruct
     /**
      * This init is creating the GroovyScriptEngine once because GCE is for servers and will cache and recompile the script if needed
      * http://www.intelligrape.com/blog/2012/08/27/using-postconstruct-annotation-with-grails-services/
      */
+    @PostConstruct
     public void init() {
         log.trace "Entered init()"
         CompilerConfiguration configuration = new CompilerConfiguration()
@@ -37,23 +37,38 @@ class ServiceDefinitionService {
      */
     @org.grails.plugins.yammermetrics.groovy.Timed
     @org.grails.plugins.yammermetrics.groovy.Metered
-    def getDefinition(String serviceName) {
+    def getDefinition(String serviceName, message) {
         if (log.isTraceEnabled()) {
             log.trace "Entered getDefinition(String serviceName)"
             log.trace "serviceName = \"${serviceName}\""
+            log.trace "message = \"${message}\""
             log.trace "binding grailsApplication and applicationContext"
+            log.trace "dslFileName = \"${serviceName}.groovy\""
         }
         Binding binding = new Binding()
         binding.setVariable("grailsApplication", grailsApplication)
         binding.setVariable("applicationContext", grailsApplication.mainContext)
-        log.trace "Parsing DSL: \"${serviceName}.groovy\""
-        def dsl = gse.run("${serviceName}.groovy", binding)
+        def dslFileName = "${serviceName}.groovy"
+        log.trace "Parsing DSL"
+        def dsl
+        try {
+            dsl = gse.run(dslFileName, binding)
+        } catch(groovy.util.ResourceException e) {
+            def errormsg = "Service Definition not found"
+            log.error errormsg
+            ServiceUtil.throwException(message, "ServiceDefinitionFileNotFoundException", errormsg)
+        } catch (Exception e) {
+            def errormsg = "Service Definition Error: ${e.message}"
+            log.error errormsg
+            ServiceUtil.throwException(message, "ServiceDefinitionException", errormsg)
+        }
+
         if (log.isTraceEnabled()) {
             log.trace "Finished parsing DSL: \"${serviceName}.groovy\""
-            log.trace "definition = \"${dsl.definition}\""
+            log.trace "definition = \"${dsl?.definition}\""
             log.trace "Leaving getDefinition(String serviceName)"
         }
-        return dsl.definition
+        return dsl?.definition
     }
 
 //    @PreDestroy

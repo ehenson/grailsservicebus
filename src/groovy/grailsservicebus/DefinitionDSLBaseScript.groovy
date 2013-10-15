@@ -60,8 +60,8 @@ abstract class DefinitionDSLBaseScript extends Script {
             if (log.isTraceEnabled()) {
                 log.trace "Entered using.alias"
                 log.trace "alias = \"${alias}\""
+                log.trace "remove binding of \"$aliasName\""
             }
-            log.trace "remove binding of \"$aliasName\""
             binding.getVariables().remove(aliasName)
             if (log.isTraceEnabled()) {
                 log.trace "binding applicationContext.\"$aliasName\" to \"$alias\""
