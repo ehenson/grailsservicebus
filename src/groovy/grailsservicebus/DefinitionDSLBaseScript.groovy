@@ -101,6 +101,26 @@ abstract class DefinitionDSLBaseScript extends Script {
         return this
     }
 
+    def action(LinkedHashMap args) {
+        if (log.isTraceEnabled()) {
+            log.trace "Entered action(LinkedHashMap args)"
+            log.trace "args = \"${args}\""
+        }
+        def action = [handler:"script"] << args
+        if (definition["actions"] == null) {
+            definition.actions = [action]
+            log.trace "creating actions map"
+        } else {
+            log.trace "appending to actions map"
+            definition.actions << action
+        }
+        if (log.isTraceEnabled()) {
+            log.trace "assigned action = \"${action}\""
+            log.trace "Leaving action(LinkedHashMap args, Closure cl)"
+        }
+        return this
+    }
+
     // Defines how to validate a property in the message of the service
     def parameter(LinkedHashMap args) {
         if (log.isTraceEnabled()) {

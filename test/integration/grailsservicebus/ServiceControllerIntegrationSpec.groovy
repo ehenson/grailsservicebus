@@ -1,6 +1,7 @@
 package grailsservicebus
 
 import grails.converters.JSON
+import grailsservicebus.test.ServiceFileHelper
 import spock.lang.Specification
 
 /**
@@ -8,7 +9,10 @@ import spock.lang.Specification
  */
 class ServiceControllerIntegrationSpec extends Specification {
     ServiceController controller
-    
+    ServiceDefinitionService serviceDefinitionService
+    ScriptActionHandlerService scriptActionHandlerService
+
+
     def setup() {
         controller = new ServiceController()
     }
@@ -48,6 +52,20 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.request.contentType = "application/json"
         controller.request.json = '{"service":{"name":"unittest"}}'
         def json = JSON.parse('{"service":{"name":"unittest"}}')
+        // create the action & definition files
+        ServiceFileHelper serviceFileHelper = new ServiceFileHelper()
+        serviceFileHelper.setup()
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        // setup the services to look at test folders
+        serviceDefinitionService.urls = serviceFileHelper.definitionURLs
+        serviceDefinitionService.init()
+        scriptActionHandlerService.urls = serviceFileHelper.actionURLs
+        scriptActionHandlerService.init()
 
         when: "index action is called"
         controller.processRequest()
@@ -56,6 +74,9 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.response.status == 200
         controller.response.json == json
         controller.response.contentType == "application/json;charset=UTF-8"
+
+        cleanup:
+        serviceFileHelper.cleanup()
     }
 
     void "test status 400 with invalid JSON"() {

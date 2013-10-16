@@ -7,6 +7,12 @@ grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+// this allows to have some common test class in src/groovy and yet remove them from the WAR file
+// http://www.obsidianscheduler.com/blog/testing-in-grails-common-base-class-for-unit-integration-functional-tests/
+grails.war.resources = { stagingDir ->
+    delete(dir:"${stagingDir}/WEB-INF/classes/grailsservicebus/test")
+}
+
 //grails.project.fork = [
 //        // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
 //        //  compile: [maxMemory: 256, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
