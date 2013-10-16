@@ -40,11 +40,12 @@ class ScriptActionHandlerService {
             log.trace "action = \"${action}\""
             log.trace "message = \"${message}\""
             log.trace "properties = \"${properties}\""
+            log.trace "getting scriptClass from file = \"${action.file}.groovy\""
         }
 
         def scriptClass
         try {
-            scripClass = groovyScriptEngine.loadScriptByName(action.file)
+            scriptClass = groovyScriptEngine.loadScriptByName("${action.file}.groovy")
         } catch(groovy.util.ResourceException e) {
             def errormsg = "Script Action not found"
             log.error errormsg
@@ -62,8 +63,15 @@ class ScriptActionHandlerService {
             log.trace "Autowiring bean properties"
             beanFactory.autowireBeanProperties(classInstance, beanFactory.AUTOWIRE_BY_NAME, false)
 
-            log.trace "invoking the execute method on the script"
-            classInstance.invokeMethod("execute", [message, properties])
+            //TODO Need to catch throwable and report an error
+            try {
+                log.trace "invoking the execute method on the script"
+                classInstance.invokeMethod("execute", [message, properties])
+            } catch (Throwable e) {
+                def errormsg = "Script Action Error: ${e.toString()}"
+                log.error errormsg, e
+                ServiceUtil.throwException(message, "ScriptActionUncaughtException", errormsg)
+            }
         } else {
             log.trace "error loading the \"script action\" script.  Skipped execution logic."
         }

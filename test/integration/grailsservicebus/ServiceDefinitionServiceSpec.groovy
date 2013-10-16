@@ -1,8 +1,7 @@
 package grailsservicebus
 
-import grails.util.BuildSettingsHolder
+import grailsservicebus.test.ServiceFileHelper
 import spock.lang.Specification
-
 /**
  * Testing of the ServiceDefinitionService
  * This majority of the tests overwrites the test.groovy definition file so it forces the GroovyScriptEngine to recompile
@@ -10,88 +9,18 @@ import spock.lang.Specification
  */
 class ServiceDefinitionServiceSpec extends Specification {
     ServiceDefinitionService serviceDefinitionService
-    def definitionsPath
-    String[] urls
-    def testDefinition
-    def resultDefinition
-    def definitionName
-    def definitionFilename
+    def serviceFileHelper
 
     def setup() {
-        new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests").deleteDir()  // just in case
-        // create the folder structure for test definitions
-        [new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests"), new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions")].each{it.mkdirs()}
-        definitionsPath = "${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"
-        urls = [definitionsPath]
-        definitionName = "test"
-        definitionFilename = "${definitionsPath}/${definitionName}.groovy"
-        serviceDefinitionService.urls = urls
+        serviceFileHelper = new ServiceFileHelper()
+        serviceFileHelper.setup()
+
+        serviceDefinitionService.urls = serviceFileHelper.definitionURLs
         serviceDefinitionService.init()
-        testDefinition = """using "unitTestService" alias "echo"
-
-parameter name: "firstName", required: true,  default: "Eric",   type: "string"
-parameter name: "lastName",  required: false, default: "Henson", type: "string"
-
-// action handler defaults to script
-action {
-    handler "script"
-    file "/opt/grailsservicebus/actions/test.groovy"
-    properties {
-        name = "my name"
-        hello = "world"
-        sample = grailsApplication.config.unittest.sample
-        echo = echo.echo "echo1 hello"
-    }
-}
-
-action {
-    file "file2"
-    properties {
-        name = [[a:"b"], 2, 3, "file2"]
-    }
-}
-
-action handler:"script", file:"file3", {
-    name = [[a:"b"], 2, 3, "file3"]
-}
-
-action file:"file4", {
-    name = [[a:"b"], 2, 3, "file4"]
-}
-
-action (handler:"script", file:"file5") {
-    name = [[a:"b"], 2, 3, "file5"]
-}
-
-action (file:"file6") {
-    name = [[a:"b"], 2, 3, "file6"]
-}
-"""
-
-        new File(definitionFilename).write(testDefinition)
-
-        resultDefinition =
-                [
-                    parameters:
-                    [
-                        [required:true, type:"string", name:"firstName", default:"Eric"],
-                        [required:false, type:"string", name:"lastName", default:"Henson"]
-                    ],
-                    actions:
-                    [
-                        [handler:"script", file:"/opt/grailsservicebus/actions/test.groovy", properties: [name:"my name", hello:"world", echo:"echo1 hello", sample:"test"] ],
-                        [handler:"script", file:"file2", properties:[name:[[a:"b"], 2, 3, "file2"]]],
-                        [handler:"script", file:"file3", properties:[name:[[a:"b"], 2, 3, "file3"]]],
-                        [handler:"script", file:"file4", properties:[name:[[a:"b"], 2, 3, "file4"]]],
-                        [handler:"script", file:"file5", properties:[name:[[a:"b"], 2, 3, "file5"]]],
-                        [handler:"script", file:"file6", properties:[name:[[a:"b"], 2, 3, "file6"]]]
-                    ]
-                ]
-
     }
 
     def cleanup() {
-        new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests").deleteDir()
+        serviceFileHelper.cleanup()
     }
 
     void "test parameter"() {
@@ -108,10 +37,10 @@ action (file:"file6") {
 parameter name: "firstName", required: true,  default: "Eric",   type: "string"
 parameter name: "lastName",  required: false, default: "Henson", type: "string"
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -173,10 +102,10 @@ action (handler:"script", file:"file5") {
 action (file:"file6") {
     name = [[a:"b"], 2, 3, "file6"]
 }"""
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -194,10 +123,10 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -217,10 +146,10 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -240,10 +169,10 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -263,10 +192,23 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
+
+        then:
+        definition == result
+    }
+
+    void "only one action"() {
+        given:
+        def result = [actions:[[handler:"script", file:"unittest"]]]
+        def script = 'action file:"unittest"'
+        serviceFileHelper.writeDefinition script
+
+        when:
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -285,10 +227,10 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
         definition == result
@@ -296,10 +238,10 @@ action {
 
     void "test default"() {
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, [:])
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, [:])
 
         then:
-        resultDefinition == definition
+        serviceFileHelper.resultDefinition == definition
     }
 
     void "test service definition file not found"() {
@@ -310,8 +252,8 @@ action {
         def definition = serviceDefinitionService.getDefinition("unittest.definition.missing", message)
 
         then:
-        println message
-        thrown(groovy.util.ResourceException)
+        definition == null
+        message == [exception:[[actionType:"groovy", actionName:"unknown", exceptionType:"ServiceDefinitionFileNotFoundException", exceptionMessage:"Service Definition not found"]]]
     }
 
     /**
@@ -332,14 +274,14 @@ action {
     }
 }
 """
-        new File(definitionFilename).write(script)
+        serviceFileHelper.writeDefinition script
 
         when:
-        def definition = serviceDefinitionService.getDefinition(definitionName, message)
+        def definition = serviceDefinitionService.getDefinition(serviceFileHelper.definitionName, message)
 
         then:
-        println message
-        thrown(groovy.lang.MissingPropertyException)
+        definition == null
+        message == [exception:[[actionType:"groovy", actionName:"unknown", exceptionType:"ServiceDefinitionException", exceptionMessage:"Service Definition Error: No such property: am for class: test"]]]
     }
 
 }

@@ -1,15 +1,21 @@
 package grailsservicebus
 
+import grailsservicebus.test.ServiceFileHelper
 import spock.lang.Specification
 
 class ScriptActionHandlerServiceSpec extends Specification {
-    //static transactional = false
     ScriptActionHandlerService scriptActionHandlerService
+    ServiceFileHelper serviceFileHelper
 
     def setup() {
+        serviceFileHelper = new ServiceFileHelper()
+        serviceFileHelper.setup()
+        scriptActionHandlerService.urls = serviceFileHelper.actionURLs
+        scriptActionHandlerService.init()
     }
 
     def cleanup() {
+        serviceFileHelper.cleanup()
     }
 
     void "test good service"() {
@@ -23,11 +29,13 @@ class UnitTest {
     }
 }
 """
+        serviceFileHelper.writeAction("unittest", source)
+        def action = [handler:"script", file:"unittest"]
         def message = [service:[name:"unittest"]]
         def properties = [:]
 
         when:
-        scriptActionHandlerService.execute(source, message, properties)
+        scriptActionHandlerService.execute(action, message, properties)
 
         then:
         message == [service:[name:"unittest"], hello:"world"]
@@ -44,15 +52,15 @@ class UnitTest {
     }
 }
 """
+        serviceFileHelper.writeAction("unittest", source)
+        def action = [handler:"script", file:"unittest"]
         def message = [service:[name:"unittest"]]
         def properties = [:]
 
         when:
-        scriptActionHandlerService.execute(source, message, properties)
+        scriptActionHandlerService.execute(action, message, properties)
 
         then:
-        println message
-        message == [service:[name:"unittest"], hello:"world"]
-
+        message == [service:[name:"unittest"], hello:"world", exception:[[actionType:"groovy", actionName:"unknown", exceptionType:"ScriptActionUncaughtException", exceptionMessage:"Script Action Error: java.lang.NullPointerException"]]]
     }
 }
