@@ -1,3 +1,5 @@
+import grails.util.BuildSettingsHolder
+
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
@@ -9,6 +11,9 @@
 
 // this allows custom configuration at a known location
 grails.config.locations = ["file:/opt/grailsservicebus/etc/grails-config.groovy"]
+
+grailsservicebus.definitions.locations = ["/opt/grailsservicebus/definitions/"]
+grailsservicebus.actions.locations = ["/opt/grailsservicebus/actions/"]
 
 // this allows a custom configuration if specified
 if (System.properties["${appName}.config.location"]) {
@@ -102,6 +107,8 @@ environments {
     test {
         // do not remove.  This is for the unit tests
         unittest.sample = "test"
+        grailsservicebus.definitions.locations = ["${basedir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"]
+        grailsservicebus.actions.locations = ["${basedir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"]
     }
 }
 

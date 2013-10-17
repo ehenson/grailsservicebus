@@ -6,10 +6,11 @@ import spock.lang.Specification
 class ScriptActionHandlerServiceSpec extends Specification {
     ScriptActionHandlerService scriptActionHandlerService
     ServiceFileHelper serviceFileHelper
+    def grailsApplication
 
     def setup() {
         serviceFileHelper = new ServiceFileHelper()
-        serviceFileHelper.setup()
+        serviceFileHelper.setup(grailsApplication)
         scriptActionHandlerService.urls = serviceFileHelper.actionURLs
         scriptActionHandlerService.init()
     }

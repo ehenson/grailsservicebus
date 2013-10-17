@@ -25,6 +25,7 @@ class ServiceDefinitionService {
         log.trace "Setting the Script Base Class to \"${DefinitionDSLBaseScript.name}\""
         configuration.setScriptBaseClass(DefinitionDSLBaseScript.name)
         GroovyClassLoader gcl = new GroovyClassLoader(this.getClass().getClassLoader(), configuration)
+        urls = (String[])grailsApplication.config?.grailsservicebus?.definitions?.locations ?: urls
         log.trace "Instantiating GroovyScriptEngine with url = \"${urls}"
         gse = new GroovyScriptEngine(urls, gcl)
         log.trace "Leaving init()"

@@ -10,10 +10,11 @@ import spock.lang.Specification
 class ServiceDefinitionServiceSpec extends Specification {
     ServiceDefinitionService serviceDefinitionService
     def serviceFileHelper
+    def grailsApplication
 
     def setup() {
         serviceFileHelper = new ServiceFileHelper()
-        serviceFileHelper.setup()
+        serviceFileHelper.setup(grailsApplication)
 
         serviceDefinitionService.urls = serviceFileHelper.definitionURLs
         serviceDefinitionService.init()

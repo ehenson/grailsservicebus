@@ -11,10 +11,23 @@ class ServiceControllerIntegrationSpec extends Specification {
     ServiceController controller
     ServiceDefinitionService serviceDefinitionService
     ScriptActionHandlerService scriptActionHandlerService
-
+    def grailsApplication
+    ServiceFileHelper serviceFileHelper
 
     def setup() {
         controller = new ServiceController()
+
+        // setup the services to look at test folders
+        // since the test folders are just now created GroovyScriptEngine needs to be reloaded because it looses
+        // its mind if it is constructed and the folder does not exists
+        serviceFileHelper = new ServiceFileHelper()
+        serviceFileHelper.setup(grailsApplication)
+        serviceDefinitionService.init()
+        scriptActionHandlerService.init()
+    }
+
+    def cleanup() {
+        serviceFileHelper.cleanup()
     }
     
     void "test request method as GET"() {
@@ -52,20 +65,12 @@ class ServiceControllerIntegrationSpec extends Specification {
         controller.request.contentType = "application/json"
         controller.request.json = '{"service":{"name":"unittest"}}'
         def json = JSON.parse('{"service":{"name":"unittest"}}')
-        // create the action & definition files
-        ServiceFileHelper serviceFileHelper = new ServiceFileHelper()
-        serviceFileHelper.setup()
         serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
         serviceFileHelper.writeAction("unittest", """
 class Unittest {
     def execute(message, properties) {}
 }
 """)
-        // setup the services to look at test folders
-        serviceDefinitionService.urls = serviceFileHelper.definitionURLs
-        serviceDefinitionService.init()
-        scriptActionHandlerService.urls = serviceFileHelper.actionURLs
-        scriptActionHandlerService.init()
 
         when: "index action is called"
         controller.processRequest()
