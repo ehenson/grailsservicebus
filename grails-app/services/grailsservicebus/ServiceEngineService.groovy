@@ -44,11 +44,6 @@ class ServiceEngineService {
             log.trace "return from executing action"
         }
 
-//        } else {
-//            def errorMessage = "Definition file \"${definitionFile}\" does not exist."
-//            log.error errorMessage
-//            ServiceUtil.throwException(message, "ServiceRegistryException", errorMessage)
-//        }
         if (log.isTraceEnabled()) {
             log.trace "returning message = \"${message}\""
             log.trace "Leaving def execute(message)"

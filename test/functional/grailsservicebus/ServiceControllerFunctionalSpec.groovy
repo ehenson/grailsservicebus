@@ -1,12 +1,28 @@
 package grailsservicebus
-
 import grails.converters.JSON
+import grailsservicebus.test.ServiceFileHelper
 import groovyx.net.http.*
 import spock.lang.Specification
 
 class ServiceControllerFunctionalSpec extends Specification {
     def url = "http://localhost:8080"
     def path = "/grailsservicebus/service/index"
+    def grailsApplication
+    ServiceFileHelper serviceFileHelper
+
+    def setup() {
+        grailsApplication = new org.codehaus.groovy.grails.commons.DefaultGrailsApplication()
+
+        // setup the services to look at test folders
+        // since the test folders are just now created GroovyScriptEngine needs to be reloaded because it looses
+        // its mind if it is constructed and the folder does not exists
+        serviceFileHelper = new ServiceFileHelper()
+        serviceFileHelper.setup(grailsApplication)
+    }
+
+    def cleanup() {
+        serviceFileHelper.cleanup()
+    }
 
     def "test request method as GET"() {
         given:
@@ -55,6 +71,12 @@ class ServiceControllerFunctionalSpec extends Specification {
 
     def "proper JSON"() {
         given: // http://coderberry.me/blog/2012/05/07/stupid-simple-post-slash-get-with-groovy-httpbuilder/
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
         def json = JSON.parse('{"service":{"name":"unittest"}}')
         HTTPBuilder http = new HTTPBuilder(url)
         HttpResponseDecorator httpResponse
@@ -79,5 +101,6 @@ class ServiceControllerFunctionalSpec extends Specification {
         httpResponse.status == 200
         httpResponse.contentType == "application/json"
         JSON.parse(respJson.toString()) == json
+        println respJson
     }
 }

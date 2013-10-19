@@ -71,6 +71,8 @@ class Unittest {
     def execute(message, properties) {}
 }
 """)
+        serviceDefinitionService.init()
+        scriptActionHandlerService.init()
 
         when: "index action is called"
         controller.processRequest()
@@ -105,14 +107,14 @@ class Unittest {
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
         controller.request.content = "".bytes
-        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
+        def expectedJson = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}]}')
 
         when: "index action is called"
         controller.processRequest()
 
         then:
         controller.response.status == 406
-        controller.response.json == json
+        controller.response.json == expectedJson
         controller.response.contentType == "application/json;charset=UTF-8"
     }
 
@@ -120,7 +122,7 @@ class Unittest {
         given:
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
-        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"Only JSON Content Types are supported."}]}')
 
         when: "index action is called"
         controller.processRequest()
@@ -136,17 +138,27 @@ class Unittest {
      */
     void "test status 400 with null text"() {
         given:
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {throw new NullPointerException()}
+}
+""")
+        serviceDefinitionService.init()
+        scriptActionHandlerService.init()
+
         controller.request.method = "POST"
         controller.request.contentType = "application/json"
-        controller.request.json = '{"service":{"name":"npe"},"npe" : true}'
-        def json = JSON.parse('{"npe":true,"service":{"name":"npe"},"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"UncaughtException","exceptionMessage":"An uncaught exception as occurred."}]}')
+        controller.request.json = '{"service":{"name":"unittest"}}'
+        def expectedJson = JSON.parse('{"service":{"name":"unittest"},"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ScriptActionUncaughtException","exceptionMessage":"Script Action Error: java.lang.NullPointerException"}]}')
 
         when: "index action is called"
         controller.processRequest()
 
         then:
+        def actualJson = controller.response.json
         controller.response.status == 500
-        controller.response.json == json
+        expectedJson == actualJson
         controller.response.contentType == "application/json;charset=UTF-8"
     }
 
