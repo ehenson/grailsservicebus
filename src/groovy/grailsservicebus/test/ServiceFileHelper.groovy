@@ -20,17 +20,15 @@ class ServiceFileHelper {
     }
 
     def setup(grailsApplication) {
-        new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests").deleteDir()  // just in case
-        // create the folder structure for test definitions
-//        [new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests"), new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"), new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions")].each{it.mkdirs()}
-//        definitionsPath = "${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"
-//        actionsPath = "${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"
-        definitionsPath = grailsApplication.config?.grailsservicebus?.definitions?.locations ?: ["${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"]
-        actionsPath = grailsApplication.config?.grailsservicebus?.actions?.locations ?: ["${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"]
+        def gdl = grailsApplication.config?.grailsservicebus?.definitions?.locations
+        def gal = grailsApplication.config?.grailsservicebus?.actions?.locations
+        def bdl = ["${BuildSettingsHolder.getSettings().baseDir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"]
+        def bal = ["${BuildSettingsHolder.getSettings().baseDir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"]
+        definitionsPath = gdl ?: bdl
+        actionsPath = gal ?: bal
+        // only wanting one path which is sufficient for testing
         definitionsPath = definitionsPath[0]
         actionsPath = actionsPath[0]
-        new File(definitionsPath).mkdirs()
-        new File(actionsPath).mkdirs()
         definitionURLs = [definitionsPath]
         actionURLs = [actionsPath]
         definitionName = "test"
@@ -99,7 +97,6 @@ action (file:"file6") {
     }
 
     def cleanup() {
-        new File("${BuildSettingsHolder.getSettings().projectWorkDir}/tests").deleteDir()
     }
 
     def writeDefinition(script) {

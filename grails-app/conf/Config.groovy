@@ -107,8 +107,9 @@ environments {
     test {
         // do not remove.  This is for the unit tests
         unittest.sample = "test"
-        grailsservicebus.definitions.locations = ["${basedir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"]
-        grailsservicebus.actions.locations = ["${basedir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"]
+        // Eric:  I can't think of another way to get basedir and projectWorkDir
+        grailsservicebus.definitions.locations = ["${BuildSettingsHolder.getSettings().baseDir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/definitions"]
+        grailsservicebus.actions.locations = ["${BuildSettingsHolder.getSettings().baseDir}/${BuildSettingsHolder.getSettings().projectWorkDir}/tests/actions"]
     }
 }
 
