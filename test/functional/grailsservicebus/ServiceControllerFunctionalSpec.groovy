@@ -11,17 +11,19 @@ class ServiceControllerFunctionalSpec extends Specification {
     ServiceFileHelper serviceFileHelper
 
     def setup() {
+        // this creates the GrailsApplication because it is not injected and I don't know how to do it yet in functional tests
         grailsApplication = new org.codehaus.groovy.grails.commons.DefaultGrailsApplication()
 
         // setup the services to look at test folders
         // since the test folders are just now created GroovyScriptEngine needs to be reloaded because it looses
         // its mind if it is constructed and the folder does not exists
+        // NOTE:  Look in the scripts/_Events.goovy because it creates the folders needed.
         serviceFileHelper = new ServiceFileHelper()
         serviceFileHelper.setup(grailsApplication)
     }
 
     def cleanup() {
-        serviceFileHelper.cleanup()
+        //serviceFileHelper.cleanup()
     }
 
     def "test request method as GET"() {
