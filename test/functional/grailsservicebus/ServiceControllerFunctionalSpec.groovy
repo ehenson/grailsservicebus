@@ -1,19 +1,17 @@
 package grailsservicebus
 import grails.converters.JSON
+import grails.test.mixin.TestFor
 import grailsservicebus.test.ServiceFileHelper
 import groovyx.net.http.*
 import spock.lang.Specification
 
+@TestFor(ServiceController)
 class ServiceControllerFunctionalSpec extends Specification {
     def url = "http://localhost:8080"
     def path = "/grailsservicebus/service/index"
-    def grailsApplication
     ServiceFileHelper serviceFileHelper
 
     def setup() {
-        // this creates the GrailsApplication because it is not injected and I don't know how to do it yet in functional tests
-        grailsApplication = new org.codehaus.groovy.grails.commons.DefaultGrailsApplication()
-
         // setup the services to look at test folders
         // since the test folders are just now created GroovyScriptEngine needs to be reloaded because it looses
         // its mind if it is constructed and the folder does not exists
@@ -103,6 +101,5 @@ class Unittest {
         httpResponse.status == 200
         httpResponse.contentType == "application/json"
         JSON.parse(respJson.toString()) == json
-        println respJson
     }
 }
