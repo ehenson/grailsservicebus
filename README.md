@@ -11,3 +11,6 @@ Features
 * A simple DSL for the service definitions
 * Groovy based Actions
 * Pluggable action handlers which allows custom code to execute an action, ie: calling another web service with the attributes of the message mapped to the parameters of the web service call
+
+
+Please use the [wiki](https://github.com/ehenson/grailsservicebus/wiki) for more information.
