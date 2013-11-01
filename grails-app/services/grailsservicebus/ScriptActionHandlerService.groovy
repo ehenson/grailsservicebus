@@ -35,12 +35,11 @@ class ScriptActionHandlerService {
 
     @org.grails.plugins.yammermetrics.groovy.Timed
     @org.grails.plugins.yammermetrics.groovy.Metered
-    void execute(action, message, properties) {
+    void execute(action, message) {
         if (log.isTraceEnabled()) {
             log.trace "Entered execute(action, message, properties)"
             log.trace "action = \"${action}\""
             log.trace "message = \"${message}\""
-            log.trace "properties = \"${properties}\""
             log.trace "getting scriptClass from file = \"${action.file}.groovy\""
         }
 
@@ -64,10 +63,9 @@ class ScriptActionHandlerService {
             log.trace "Autowiring bean properties"
             beanFactory.autowireBeanProperties(classInstance, beanFactory.AUTOWIRE_BY_NAME, false)
 
-            //TODO Need to catch throwable and report an error
             try {
                 log.trace "invoking the execute method on the script"
-                classInstance.invokeMethod("execute", [message, properties])
+                classInstance.invokeMethod("execute", [message, action.properties])
             } catch (Throwable e) {
                 def errormsg = "Script Action Error: ${e.toString()}"
                 log.error errormsg, e
@@ -79,7 +77,7 @@ class ScriptActionHandlerService {
         if (log.isTraceEnabled()) {
             log.trace "Finished executing action: \"${action.file}.groovy\""
             log.trace "message = \"${message}\""
-            log.trace "Leaving execute(action, message, properties)"
+            log.trace "Leaving execute(action, message)"
         }
     }
 }

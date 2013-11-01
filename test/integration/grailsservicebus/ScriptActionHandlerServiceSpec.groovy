@@ -36,7 +36,7 @@ class UnitTest {
         def properties = [:]
 
         when:
-        scriptActionHandlerService.execute(action, message, properties)
+        scriptActionHandlerService.execute(action, message)
 
         then:
         message == [service:[name:"unittest"], hello:"world"]
@@ -59,7 +59,7 @@ class UnitTest {
         def properties = [:]
 
         when:
-        scriptActionHandlerService.execute(action, message, properties)
+        scriptActionHandlerService.execute(action, message)
 
         then:
         message == [service:[name:"unittest"], hello:"world", exception:[[actionType:"groovy", actionName:"unknown", exceptionType:"ScriptActionUncaughtException", exceptionMessage:"Script Action Error: java.lang.NullPointerException"]]]

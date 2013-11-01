@@ -25,23 +25,37 @@ class ServiceEngineService {
             log.trace "looping actions"
         }
 
-        for(action in definition.actions) {
-            if (log.isTraceEnabled()) {
-                log.trace "Action = \"${action}\""
-            }
-            def actionHandlerName = "${action.handler}ActionHandlerService"
+        if (definition != null) {
+            for(action in definition.actions) {
+                if (log.isTraceEnabled()) {
+                    log.trace "Action = \"${action}\""
+                }
+                def actionHandlerName = "${action.handler}ActionHandlerService"
 
-            log.trace "Loading \"${actionHandlerName}\" service"
-            def actionHandler = grailsApplication.mainContext."${actionHandlerName}"
+                log.trace "Loading \"${actionHandlerName}\" service"
+                def actionHandler = grailsApplication.mainContext."${actionHandlerName}"
 
-            if (log.isTraceEnabled()) {
-                log.trace "Executing the action with:"
-                log.trace "action = \"${action}\""
-                log.trace "message = \"${message}\""
-                log.trace "properties = \"${action.properties}\""
+                if (log.isTraceEnabled()) {
+                    if (actionHandler != null) {
+                        log.trace "Executing the action with:"
+                        log.trace "action = \"${action}\""
+                        log.trace "message = \"${message}\""
+                        log.trace "properties = \"${action.properties}\""
+                    }
+                }
+                if (actionHandler != null) {
+                    actionHandler.execute(action, message)
+                    log.trace "return from executing action"
+                } else {
+                    def errormsg = "Action handler \"${actionHandlerName}\" reference is null"
+                    log.error errormsg
+                    ServiceUtil.throwException(message, "ServiceEngineException", errormsg)
+                }
             }
-            actionHandler.execute(action, message, action.properties)
-            log.trace "return from executing action"
+        } else {
+            def errormsg = "Definition for service \"${message.service.name}\" is null"
+            log.error errormsg
+            ServiceUtil.throwException(message, "ServiceEngineException", errormsg)
         }
 
         if (log.isTraceEnabled()) {

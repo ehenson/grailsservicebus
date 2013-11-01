@@ -57,7 +57,6 @@ class ServiceController {
                             // message is good at this point
                             log.trace "Message has a proper service object"
 
-
                             log.trace "Executing the service engine"
                             serviceEngineService.execute(message)
                             log.trace "Finished executing the service engine"

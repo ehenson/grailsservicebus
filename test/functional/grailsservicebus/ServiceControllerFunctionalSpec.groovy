@@ -102,4 +102,39 @@ class Unittest {
         httpResponse.contentType == "application/json"
         JSON.parse(respJson.toString()) == json
     }
+
+    def "test definition not having valid handler"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", 'action handler:"unitTestHandlerNotValid", file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        def json = JSON.parse('{"service":{"name":"unittest"},"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceEngineException","exceptionMessage":"Action handler \\"unitTestHandlerNotValidActionHandlerService\\" reference is null"}]}')
+
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+        def text
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = [service:[name:"unittest"]]
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        httpResponse.status == 500
+        httpResponse.contentType == "application/json"
+        JSON.parse(respJson.toString()) == json
+    }
 }
