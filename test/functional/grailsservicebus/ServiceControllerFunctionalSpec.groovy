@@ -116,7 +116,6 @@ class Unittest {
         HTTPBuilder http = new HTTPBuilder(url)
         HttpResponseDecorator httpResponse
         def respJson
-        def text
 
         when:
         def status = http.request(Method.POST, ContentType.JSON) {
@@ -137,4 +136,189 @@ class Unittest {
         httpResponse.contentType == "application/json"
         JSON.parse(respJson.toString()) == json
     }
+
+    def "test NPE from the Action"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {
+        def npe = null
+        def split = npe.split("/")
+    }
+}
+""")
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ScriptActionUncaughtException","exceptionMessage":"Script Action Error: java.lang.NullPointerException: Cannot invoke method split() on null object"}],"service":{"name":"unittest"}}')
+
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = [service:[name:"unittest"]]
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        def responseJson = respJson.toString()
+        httpResponse.status == 500
+        httpResponse.contentType == "application/json"
+        JSON.parse(responseJson) == json
+    }
+
+    def "test NPE from the Definition"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", """
+action file:"unittest.groovy", {
+    key = {
+        def npe = null
+        def split = npe.split("/")
+        return split
+    }()
+}
+""")
+
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceDefinitionException","exceptionMessage":"Service Definition Error: Cannot invoke method split() on null object"},{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceEngineException","exceptionMessage":"Definition for service \\"unittest\\" is null"}],"service":{"name":"unittest"}}')
+
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = [service:[name:"unittest"]]
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        def responseJson = respJson.toString()
+        httpResponse.status == 500
+        httpResponse.contentType == "application/json"
+        JSON.parse(responseJson) == json
+    }
+
+    def "test empty content with proper contentType"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = ""
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        def responseJson = respJson.toString()
+        httpResponse.status == 406
+        httpResponse.contentType == "application/json"
+        JSON.parse(responseJson) == json
+    }
+
+    def "test empty json as an empty list"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = []
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        def responseJson = respJson.toString()
+        httpResponse.status == 406
+        httpResponse.contentType == "application/json"
+        JSON.parse(responseJson) == json
+    }
+
+    def "test empty json as an empty object"() {
+        given:
+        serviceFileHelper.writeDefinition("unittest", 'action file:"unittest"')
+        serviceFileHelper.writeAction("unittest", """
+class Unittest {
+    def execute(message, properties) {}
+}
+""")
+        def json = JSON.parse('{"exception":[{"actionType":"groovy","actionName":"unknown","exceptionType":"ServiceProtocolException","exceptionMessage":"The message does not have a proper service object"}]}')
+        HTTPBuilder http = new HTTPBuilder(url)
+        HttpResponseDecorator httpResponse
+        def respJson
+
+        when:
+        def status = http.request(Method.POST, ContentType.JSON) {
+            uri.path = path
+            body = [:]
+            response.success = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+            response.failure = { resp, httpJson ->
+                httpResponse = resp
+                respJson = httpJson
+            }
+        }
+
+        then:
+        def responseJson = respJson.toString()
+        httpResponse.status == 406
+        httpResponse.contentType == "application/json"
+        JSON.parse(responseJson) == json
+    }
+
 }

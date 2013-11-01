@@ -65,6 +65,9 @@ class ServiceController {
                                 log.trace "Message does not have a proper service object"
                                 log.trace "throwing a message exception and setting status to 400"
                             }
+                            if(!(message instanceof LinkedHashMap)) {
+                                message = [:]
+                            }
                             ServiceUtil.throwException(message, "ServiceProtocolException", "The message does not have a proper service object")
                             httpStatus = 406
                         }
