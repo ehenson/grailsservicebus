@@ -12,10 +12,7 @@
     </facet>
     <facet type="hibernate" name="Hibernate">
       <configuration>
-        <datasource-map>
-          <unit-entry name="Gorm" />
-          <unit-entry name="sessionFactory" />
-        </datasource-map>
+        <datasource-map />
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -65,9 +62,8 @@
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/yammer-metrics-2.1.2-6/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/yammer-metrics-2.1.2-6/grails-app/i18n" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="grails-2.3.1" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="grails-2.3.1" level="application" />
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (Grails Service Bus-grailsPlugins)">
@@ -105,7 +101,6 @@
           <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.9.5/jackson-mapper-asl-1.9.5.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/com/yammer/metrics/metrics-servlet/2.1.2/metrics-servlet-2.1.2.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/liquibase/liquibase-core/2.0.5/liquibase-core-2.0.5.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.4/commons-codec-1.4.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/groovy/modules/http-builder/http-builder/0.5.0/http-builder-0.5.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/gmock/gmock/0.8.1/gmock-0.8.1.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/geb/geb-core/0.6.0/geb-core-0.6.0.jar!/" />
@@ -114,12 +109,13 @@
           <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit-core-js/2.8/htmlunit-core-js-2.8.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/james/apache-mime4j/0.6/apache-mime4j-0.6.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpmime/4.0.1/httpmime-4.0.1.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.0.1/httpcore-4.0.1.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.0.1/httpclient-4.0.1.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/htmlunit/htmlunit/2.8/htmlunit-2.8.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-common/2.0a7/selenium-common-2.0a7.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-htmlunit-driver/2.0a7/selenium-htmlunit-driver-2.0a7.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.5/junit-4.5.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.4/commons-codec-1.4.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.0.1/httpcore-4.0.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.0.1/httpclient-4.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

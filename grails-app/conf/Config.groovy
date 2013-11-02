@@ -116,7 +116,7 @@ environments {
 // log4j configuration
 log4j = {
     root {
-        trace()
+//        trace()
 //        info()
     }
 

@@ -41,9 +41,9 @@ grails.project.dependency.resolution = {
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
 
+        mavenLocal()
         grailsPlugins()
         grailsHome()
-        mavenLocal()
         grailsCentral()
         mavenCentral()
         // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
@@ -60,10 +60,10 @@ grails.project.dependency.resolution = {
         test "org.codehaus.geb:geb-core:0.6.0",
                 "org.gmock:gmock:0.8.1"
         test    "org.codehaus.groovy.modules.http-builder:http-builder:0.5.0", {
-            excludes "commons-logging", "httpclient", "xml-apis", "groovy"
+            excludes "commons-logging", "xml-apis", "groovy", "httpclient"
         }
         test    "org.seleniumhq.selenium:selenium-htmlunit-driver:2.0a7", {
-            excludes "htmlunit", "xml-apis"
+            excludes "xml-apis", "htmlunit"
         }
         test    "net.sourceforge.htmlunit:htmlunit:2.8", {
             excludes "xml-apis", "commons-logging"
